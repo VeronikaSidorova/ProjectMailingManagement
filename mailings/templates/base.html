@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Панель управления{% endblock %}</title>
+    <link rel="stylesheet" href="/static_bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container my-4 text-center">
+    <h1 class="mb-4 fw-semibold" style="color: #8A2BE2; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+        {% block header %}Привет! Это сайт управления твоими рассылками!{% endblock %}
+    </h1>
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<div class="fixed-bottom bg-light border-top py-3">
+  <div class="container d-flex justify-content-center gap-3">
+    {% if user.is_authenticated %}
+      <!-- Если пользователь авторизован, показываем кнопку выхода -->
+      <a href="#" class="btn" style="background-color: #17A2B8; color: white;">Выход</a>
+    {% else %}
+      <!-- Если не авторизован, показываем вход и регистрацию -->
+      <a href="#" class="btn" style="background-color: #17A2B8; color: white;">Вход</a>
+      <a href="#" class="btn" style="background-color: #138496; color: white;">Регистрация</a>
+    {% endif %}
+  </div>
+</div>
+
+<script src="/static_bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

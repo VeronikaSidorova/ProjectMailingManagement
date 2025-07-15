@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Панель управления{% endblock %}
+
+{% block header %}Привет! Это сайт управления твоими рассылками!{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center row g-4" style="min-height: 80vh;">
+    <div class="col-md-4">
+        <div class="card text-white bg-purple-light h-100" style="background-color: #D8BFD8;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h2 class="card-title">{{ total_campaigns }}</h2>
+                <p class="card-text">Всего кампаний</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка: Активные кампании -->
+    <div class="col-md-4">
+        <div class="card text-white" style="background-color: #9370DB;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h2 class="card-title">{{ active_campaigns }}</h2>
+                <p class="card-text">Активных кампаний</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка: Уникальных получателей -->
+    <div class="col-md-4">
+        <div class="card text-white" style="background-color: #8A2BE2;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <h2 class="card-title">{{ unique_recipients }}</h2>
+                <p class="card-text">Уникальных получателей</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
