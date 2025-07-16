@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -6,7 +7,7 @@ from django.views.generic import (
     DeleteView,
     ListView,
     TemplateView,
-    UpdateView,
+    UpdateView, DetailView,
 )
 
 from .models import Campaign, Message, Recipient, SendAttempt, SendLog
@@ -19,24 +20,37 @@ class RecipientListView(ListView):
     template_name = "recipient_list.html"
 
 
-class RecipientCreateView(CreateView):
+class RecipientCreateView(LoginRequiredMixin, CreateView):
     model = Recipient
     fields = ["email", "full_name", "comment"]
     template_name = "recipient_form.html"
-    success_url = reverse_lazy("recipient_list")
+    success_url = reverse_lazy("mailings:recipient_list")
+
+    def form_valid(self, form):
+        product = form.save()
+        user = self.request.user
+        product.owner = user
+        product.save()
+        return super().form_valid(form)
 
 
-class RecipientUpdateView(UpdateView):
+class RecipientDetailView(LoginRequiredMixin, DetailView):
+    model = Recipient
+    template_name = "recipient_detail.html"
+    context_object_name = "recipient"
+
+
+class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipient
     fields = ["email", "full_name", "comment"]
     template_name = "recipient_form.html"
-    success_url = reverse_lazy("recipient_list")
+    success_url = reverse_lazy("mailings:recipient_list")
 
 
 class RecipientDeleteView(DeleteView):
     model = Recipient
     template_name = "recipient_confirm_delete.html"
-    success_url = reverse_lazy("recipient_list")
+    success_url = reverse_lazy("mailings:recipient_list")
 
 
 # Сообщения
@@ -49,20 +63,20 @@ class MessageCreateView(CreateView):
     model = Message
     fields = ["subject", "body"]
     template_name = "message_form.html"
-    success_url = reverse_lazy("message_list")
+    success_url = reverse_lazy("mailings:message_list")
 
 
 class MessageUpdateView(UpdateView):
     model = Message
     fields = ["subject", "body"]
     template_name = "message_form.html"
-    success_url = reverse_lazy("message_list")
+    success_url = reverse_lazy("mailings:message_list")
 
 
 class MessageDeleteView(DeleteView):
     model = Message
     template_name = "message_confirm_delete.html"
-    success_url = reverse_lazy("message_list")
+    success_url = reverse_lazy("mailings:message_list")
 
 
 # Рассылки
@@ -78,7 +92,7 @@ class CampaignCreateView(CreateView):
     template_name = "campaign_form.html"
 
     def get_success_url(self):
-        return reverse_lazy("campaign_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("mailings:campaign_detail", kwargs={"pk": self.object.pk})
 
 
 class CampaignUpdateView(UpdateView):
@@ -88,14 +102,14 @@ class CampaignUpdateView(UpdateView):
     template_name = "campaign_form.html"
 
     def get_success_url(self):
-        return reverse_lazy("campaign_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("mailings:campaign_detail", kwargs={"pk": self.object.pk})
 
 
 class CampaignDeleteView(DeleteView):
     model = Campaign
     template_name = "campaign_confirm_delete.html"
 
-    success_url = reverse_lazy("campaign_list")
+    success_url = reverse_lazy("mailings:campaign_list")
 
 
 # Попытки отправки (обычно создаются автоматически при запуске рассылки)
@@ -111,7 +125,7 @@ class SendAttemptCreateView(CreateView):
     template_name = "sendattempt_form.html"
 
     def get_success_url(self):
-        return reverse_lazy("sendattempt_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("mailings:sendattempt_detail", kwargs={"pk": self.object.pk})
 
 
 class SendAttemptUpdateView(UpdateView):
@@ -120,7 +134,7 @@ class SendAttemptUpdateView(UpdateView):
     template_name = "sendattempt_form.html"
 
     def get_success_url(self):
-        return reverse_lazy("sendattempt_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("mailings:sendattempt_detail", kwargs={"pk": self.object.pk})
 
 
 class SendAttemptDeleteView(DeleteView):
@@ -128,7 +142,7 @@ class SendAttemptDeleteView(DeleteView):
 
     template_name = "sendattempt_confirm_delete.html"
 
-    success_url = reverse_lazy("sendattempt_list")
+    success_url = reverse_lazy("mailings:sendattempt_list")
 
 
 # Логи отправки писем
@@ -144,7 +158,7 @@ class SendLogCreateView(CreateView):
     template_name = "sendlog_form.html"
 
     def get_success_url(self):
-        return reverse_lazy("sendlog_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("mailings:sendlog_detail", kwargs={"pk": self.object.pk})
 
 
 class SendLogUpdateView(UpdateView):
@@ -154,7 +168,7 @@ class SendLogUpdateView(UpdateView):
     template_name = "sendlog_form.html"
 
     def get_success_url(self):
-        return reverse_lazy("sendlog_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("mailings:sendlog_detail", kwargs={"pk": self.object.pk})
 
 
 class SendLogDeleteView(DeleteView):
@@ -162,7 +176,7 @@ class SendLogDeleteView(DeleteView):
 
     template_name = "sendlog_confirm_delete.html"
 
-    success_url = reverse_lazy("sendlog_list")
+    success_url = reverse_lazy("mailings:sendlog_list")
 
 
 class DashboardView(TemplateView):
@@ -183,4 +197,4 @@ def manual_send_campaign(request, pk):
         messages.success(request, f"Рассылка '{campaign}' запущена вручную.")
     except Exception as e:
         messages.error(request, f"Ошибка при отправке: {e}")
-    return redirect("campaign_detail", pk=pk)
+    return redirect("mailings:campaign_detail", pk=pk)

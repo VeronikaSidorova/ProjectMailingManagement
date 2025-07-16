@@ -22,7 +22,7 @@ from mailings.views import (
     SendLogCreateView,
     SendLogDeleteView,
     SendLogListView,
-    SendLogUpdateView,
+    SendLogUpdateView, RecipientDetailView,
 )
 
 app_name = MailingsConfig.name
@@ -30,7 +30,8 @@ app_name = MailingsConfig.name
 urlpatterns = [
     path("", DashboardView.as_view(), name="dashboard"),
     path("recipients/", RecipientListView.as_view(), name="recipient_list"),
-    path("recipients/add/", RecipientCreateView.as_view(), name="recipient_add"),
+    path("recipients/add/", RecipientCreateView.as_view(), name="recipient_form"),
+    path("recipients/<int:pk>/", RecipientDetailView.as_view(), name="recipient_detail"),
     path(
         "recipients/<int:pk>/edit/",
         RecipientUpdateView.as_view(),
@@ -41,13 +42,14 @@ urlpatterns = [
         RecipientDeleteView.as_view(),
         name="recipient_delete",
     ),
+
     path("messages/", MessageListView.as_view(), name="message_list"),
     path("messages/add/", MessageCreateView.as_view(), name="message_add"),
     path("messages/<int:pk>/edit/", MessageUpdateView.as_view(), name="message_edit"),
     path(
         "messages/<int:pk>/delete/", MessageDeleteView.as_view(), name="message_delete"
     ),
-    # Маршруты для Campaign
+
     path("campaigns/", CampaignListView.as_view(), name="campaign_list"),
     path("campaigns/add/", CampaignCreateView.as_view(), name="campaign_add"),
     path(
@@ -58,6 +60,7 @@ urlpatterns = [
         CampaignDeleteView.as_view(),
         name="campaign_delete",
     ),
+
     path("sendattempts/", SendAttemptListView.as_view(), name="sendattempt_list"),
     path("sendattempts/add/", SendAttemptCreateView.as_view(), name="sendattempt_add"),
     path(
@@ -70,7 +73,7 @@ urlpatterns = [
         SendAttemptDeleteView.as_view(),
         name="sendattempt_delete",
     ),
-    # Маршруты для SendLog
+
     path("sendlogs/", SendLogListView.as_view(), name="sendlog_list"),
     path("sendlogs/add/", SendLogCreateView.as_view(), name="sendlog_add"),
     path("sendlogs/<int:pk>/edit/", SendLogUpdateView.as_view(), name="sendlog_edit"),

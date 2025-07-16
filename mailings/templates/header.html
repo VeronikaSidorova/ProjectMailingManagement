@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Переключить навигацию">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ms-5">
+        <!-- Выпадающее меню -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Меню
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="{% url 'mailings:recipient_list' %}">Получатели</a></li>
+            <li><a class="dropdown-item" href="#">Сообщения</a></li>
+            <li><a class="dropdown-item" href="#">Рассылки</a></li>
+          </ul>
+        </li>
+      </ul>
+      <a class="p-2 btn btn-outline-secondary" href="{% url 'mailings:dashboard' %}">На главную</a>
+    </div>
+  </div>
+</nav>
