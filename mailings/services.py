@@ -7,6 +7,7 @@ from config.settings import CACHE_ENABLED
 from .models import Campaign, Recipient, SendAttempt, SendLog, Message
 from django.core.mail import send_mail
 
+
 def send_campaign(campaign_id):
     """
     Отправляет сообщения по выбранной кампании.
@@ -22,9 +23,7 @@ def send_campaign(campaign_id):
 
     # Создаем запись о попытке отправки
     send_attempt = SendAttempt.objects.create(
-        campaign=campaign,
-        status='Не успешно',  # по умолчанию, обновим позже
-        server_response='Начало отправки'
+        campaign=campaign, status="Не успешно", server_response="Начало отправки"  # по умолчанию, обновим позже
     )
 
     all_successful = True  # флаг для итогового статуса
@@ -43,8 +42,8 @@ def send_campaign(campaign_id):
             SendLog.objects.create(
                 campaign=campaign,
                 recipient=recipient,
-                status='Успешно',
-                server_response='Письмо успешно отправлено.',
+                status="Успешно",
+                server_response="Письмо успешно отправлено.",
             )
         except Exception as e:
             all_successful = False  # есть ошибка, значит не все успешно
@@ -52,17 +51,17 @@ def send_campaign(campaign_id):
             SendLog.objects.create(
                 campaign=campaign,
                 recipient=recipient,
-                status='Не успешно',
+                status="Не успешно",
                 server_response=str(e),
             )
 
     # Обновляем статус Attempt в зависимости от результата
     if all_successful:
-        send_attempt.status = 'Успешно'
-        send_attempt.server_response = 'Все письма успешно отправлены.'
+        send_attempt.status = "Успешно"
+        send_attempt.server_response = "Все письма успешно отправлены."
     else:
-        send_attempt.status = 'Не успешно'
-        send_attempt.server_response = 'Некоторые письма не были отправлены. Проверьте логи.'
+        send_attempt.status = "Не успешно"
+        send_attempt.server_response = "Некоторые письма не были отправлены. Проверьте логи."
 
     send_attempt.save()
 
@@ -71,17 +70,17 @@ def manual_send_campaign(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     if campaign.status == "Завершена":
         messages.error(request, "Невозможно запустить рассылку, статус — завершена(заблокирована менеджером).")
-        return redirect('mailings:campaign_detail', pk=pk)
-    if request.method == 'POST':
+        return redirect("mailings:campaign_detail", pk=pk)
+    if request.method == "POST":
         # Запускаем отправку
         send_campaign(campaign.id)
         # Обновляем статус
         campaign.status = "Запущена"
         campaign.save()
         messages.success(request, "Рассылка успешно запущена вручную.")
-        return redirect('mailings:campaign_detail', pk=pk)
+        return redirect("mailings:campaign_detail", pk=pk)
     else:
-        return redirect('mailings:campaign_detail', pk=pk)
+        return redirect("mailings:campaign_detail", pk=pk)
 
 
 def get_recipient_from_cache():

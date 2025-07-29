@@ -12,19 +12,20 @@ from config.settings import EMAIL_HOST_USER
 from users.forms import UserRegisterForm, UserForm, UserSetNewPasswordForm, UserForgotPasswordForm
 from users.models import User
 
+
 class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = User
     template_name = "users_list.html"
-    ordering = ['id']
+    ordering = ["id"]
     paginate_by = 10
 
     def test_func(self):
         user = self.request.user
-        return user.groups.filter(name='managers').exists()
+        return user.groups.filter(name="managers").exists()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user_count'] = self.get_queryset().count()
+        context["user_count"] = self.get_queryset().count()
         return context
 
 

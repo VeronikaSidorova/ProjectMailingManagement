@@ -7,7 +7,8 @@ from django.views.generic import (
     DeleteView,
     ListView,
     TemplateView,
-    UpdateView, DetailView,
+    UpdateView,
+    DetailView,
 )
 
 from .forms import CampaignForm
@@ -19,12 +20,12 @@ from .services import send_campaign, get_recipient_from_cache, get_message_from_
 class RecipientListView(ListView):
     model = Recipient
     template_name = "recipient_list.html"
-    ordering = ['id']
+    ordering = ["id"]
 
     def get_queryset(self):
         recipients = get_recipient_from_cache()
         user = self.request.user
-        if user.groups.filter(name='managers').exists():
+        if user.groups.filter(name="managers").exists():
             return recipients
         else:
             return recipients.filter(owner=user)
@@ -68,12 +69,12 @@ class RecipientDeleteView(DeleteView):
 class MessageListView(ListView):
     model = Message
     template_name = "message_list.html"
-    ordering = ['id']
+    ordering = ["id"]
 
     def get_queryset(self):
         messagies = get_message_from_cache()
         user = self.request.user
-        if user.groups.filter(name='managers').exists():
+        if user.groups.filter(name="managers").exists():
             return messagies
         else:
             return messagies.filter(owner=user)
@@ -117,12 +118,12 @@ class MessageDeleteView(DeleteView):
 class CampaignListView(ListView):
     model = Campaign
     template_name = "campaign_list.html"
-    ordering = ['id']
+    ordering = ["id"]
 
     def get_queryset(self):
         campaigns = get_campaign_from_cache()
         user = self.request.user
-        if user.groups.filter(name='managers').exists():
+        if user.groups.filter(name="managers").exists():
             return campaigns
         else:
             return campaigns.filter(owner=user)
@@ -138,7 +139,7 @@ class CampaignCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user  # передаем пользователя в форму
+        kwargs["user"] = self.request.user  # передаем пользователя в форму
         return kwargs
 
     def form_valid(self, form):
@@ -166,7 +167,7 @@ class CampaignUpdateView(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user  # передаем пользователя в форму
+        kwargs["user"] = self.request.user  # передаем пользователя в форму
         return kwargs
 
     def form_valid(self, form):
@@ -197,27 +198,35 @@ class DashboardView(TemplateView):
 
 def view_statistics(campaign_id):
     campaigns_stats = Campaign.objects.annotate(
-        total_sent=Count('sendattempt'),
-        success_count=Count('sendattempt', filter=Q(sendattempt__status='Успешно')),
-        failure_count=Count('sendattempt', filter=Q(sendattempt__status='Не успешно')),
-    ).values('id', 'total_sent', 'success_count', 'failure_count')
+        total_sent=Count("sendattempt"),
+        success_count=Count("sendattempt", filter=Q(sendattempt__status="Успешно")),
+        failure_count=Count("sendattempt", filter=Q(sendattempt__status="Не успешно")),
+    ).values("id", "total_sent", "success_count", "failure_count")
 
-    return render(request, 'statistics.html', {
-        'campaigns_stats': campaigns_stats,
-    })
+    return render(
+        request,
+        "statistics.html",
+        {
+            "campaigns_stats": campaigns_stats,
+        },
+    )
 
 
 def campaign_statistics_detail_view(request, campaign_id):
     campaign = get_object_or_404(Campaign, pk=campaign_id)
-    stats = SendAttempt.objects.filter(campaign_id=campaign_id).values('status').annotate(count=Count('id'))
+    stats = SendAttempt.objects.filter(campaign_id=campaign_id).values("status").annotate(count=Count("id"))
 
     result = {
-        'total_sent': SendAttempt.objects.filter(campaign_id=campaign_id).count(),
-        'success_count': next((item['count'] for item in stats if item['status'] == "Успешно"), 0),
-        'failure_count': next((item['count'] for item in stats if item['status'] == "Не успешно"), 0),
+        "total_sent": SendAttempt.objects.filter(campaign_id=campaign_id).count(),
+        "success_count": next((item["count"] for item in stats if item["status"] == "Успешно"), 0),
+        "failure_count": next((item["count"] for item in stats if item["status"] == "Не успешно"), 0),
     }
 
-    return render(request, 'campaign_statistics_detail.html', {
-        'campaign': campaign,
-        'stats': result,
-    })
+    return render(
+        request,
+        "campaign_statistics_detail.html",
+        {
+            "campaign": campaign,
+            "stats": result,
+        },
+    )

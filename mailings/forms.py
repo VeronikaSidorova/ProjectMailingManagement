@@ -19,13 +19,13 @@ class CampaignForm(StyleFormMixin, forms.ModelForm):
         model = Campaign
         fields = ["start_time", "message", "recipients"]
         widgets = {
-            'recipients': forms.SelectMultiple(),  # или forms.SelectMultiple()
-            'message': forms.Select(),
+            "recipients": forms.SelectMultiple(),  # или forms.SelectMultiple()
+            "message": forms.Select(),
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # ожидаем user при инициализации формы
+        user = kwargs.pop("user", None)  # ожидаем user при инициализации формы
         super().__init__(*args, **kwargs)
         if user is not None:
-            self.fields['recipients'].queryset = Recipient.objects.filter(owner=user)
-            self.fields['message'].queryset = Message.objects.filter(owner=user)
+            self.fields["recipients"].queryset = Recipient.objects.filter(owner=user)
+            self.fields["message"].queryset = Message.objects.filter(owner=user)

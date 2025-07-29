@@ -44,18 +44,10 @@ class Campaign(models.Model):
         ("Завершена", "Завершена"),
     ]
 
-    start_time = models.DateTimeField(
-        null=True, blank=True, verbose_name="Дата и время первой отправки"
-    )
-    end_time = models.DateTimeField(
-        verbose_name="Дата и время окончания отправки", auto_now=True
-    )
-    status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, default="Создана", verbose_name="Статус"
-    )
-    message = models.ForeignKey(
-        Message, on_delete=models.CASCADE, verbose_name="Сообщение"
-    )
+    start_time = models.DateTimeField(null=True, blank=True, verbose_name="Дата и время первой отправки")
+    end_time = models.DateTimeField(verbose_name="Дата и время окончания отправки", auto_now=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Создана", verbose_name="Статус")
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name="Сообщение")
     recipients = models.ManyToManyField(Recipient, verbose_name="Получатели")
     owner = models.ForeignKey(
         User,
@@ -74,19 +66,13 @@ class Campaign(models.Model):
 
 
 class SendAttempt(models.Model):
-    campaign = models.ForeignKey(
-        Campaign, on_delete=models.CASCADE, verbose_name="Рассылка"
-    )
-    attempt_time = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата и время попытки"
-    )
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, verbose_name="Рассылка")
+    attempt_time = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время попытки")
     status_choices = [
         ("Успешно", "Успешно"),
         ("Не успешно", "Не успешно"),
     ]
-    status = models.CharField(
-        max_length=10, choices=status_choices, verbose_name="Статус"
-    )
+    status = models.CharField(max_length=10, choices=status_choices, verbose_name="Статус")
     server_response = models.TextField(verbose_name="Ответ почтового сервера")
 
 
