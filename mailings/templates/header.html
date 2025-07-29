@@ -11,11 +11,16 @@
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Меню
           </a>
+          {% if user.is_authenticated %}
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'mailings:recipient_list' %}">Получатели</a></li>
-            <li><a class="dropdown-item" href="#">Сообщения</a></li>
-            <li><a class="dropdown-item" href="#">Рассылки</a></li>
+            <li><a class="dropdown-item" href="{% url 'mailings:message_list' %}">Сообщения</a></li>
+            <li><a class="dropdown-item" href="{% url 'mailings:campaign_list' %}">Рассылки</a></li>
+            {% if perms.users.can_view_user %}
+              <li><a class="dropdown-item" href="{% url 'users:users_list' %}">Список пользователей</a></li>
+            {% endif %}
           </ul>
+          {% endif %}
         </li>
       </ul>
       <a class="p-2 btn btn-outline-secondary" href="{% url 'mailings:dashboard' %}">На главную</a>

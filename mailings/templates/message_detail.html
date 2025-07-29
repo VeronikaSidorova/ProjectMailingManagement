@@ -1,0 +1,30 @@
+{% extends 'base.html'%}
+{% block title %}Детали сообщения{% endblock %}
+{% block content %}
+<div class="row text-center">
+    <div class="col-12">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h5 class="my-0 font-weight-normal">{{message.subject}}</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mt-3 mb-4 text-start m-3" style="min-height: 120px;">
+                    <li>
+                        Текст письма:
+                        {% if message.body %}
+                            {{ message.body }}
+                        {% else %}
+                            Нет текста
+                        {% endif %}
+                    </li>
+                </ul>
+                <a href="{% url 'mailings:message_list' %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
+                {% if user == message.owner %}
+                    <a href="{% url 'mailings:message_edit' message.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Редактировать</a>
+                    <a href="{% url 'mailings:message_delete' message.pk %}" class="btn btn-lg btn-block btn-outline-danger">Удалить</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

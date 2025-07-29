@@ -1,0 +1,39 @@
+{% extends 'base.html'%}
+
+{% block title %}Список сообщений{% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+    <h1 class="mb-4">Список сообщений</h1>
+    <a class="p-2 btn" style="background-color: #9370DB;" href="{% url 'mailings:message_form' %}">Добавить сообщение</a>
+
+    {% if object_list %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Тема письма</th>
+                    <th>Текст письма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ message.subject }}</td>
+                    <td>"{{ message.body|slice:":25" }}"{% if message.body|length > 25 %}...{% endif %}</td>
+                    {% if user == message.owner %}
+                        <td><a href="{% url 'mailings:message_detail' message.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Просмотр</a></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Нет сообщений.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

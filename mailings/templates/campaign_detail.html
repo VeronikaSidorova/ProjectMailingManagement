@@ -1,0 +1,66 @@
+{% extends 'base.html'%}
+{% block title %}Детали рассылки{% endblock %}
+{% block content %}
+
+{% if messages %}
+  <div class="messages-container" style="margin-bottom: 20px;">
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<div class="row text-center">
+    <div class="col-12">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h5 class="my-0 font-weight-normal">{{ campaign.message }}</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mt-3 mb-4 text-start m-3" style="min-height: 120px;">
+                    <li>
+                        Текст письма:
+                        {% if campaign.message%}
+                            {{ campaign.message }}
+                        {% else %}
+                            Нет текста
+                        {% endif %}
+                    </li>
+                    <li>
+                        Получатели:
+                        <ul>
+                        {% for recipient in campaign.recipients.all %}
+                            <li>{{ recipient.email }}</li>
+                        {% empty %}
+                            <li>Нет получателей</li>
+                        {% endfor %}
+                    </ul>
+                    </li>
+                    <li>
+                        Статус: {{campaign.status}}
+                    </li>
+                    <li>
+                        Дата и время первой отправки: {{campaign.start_time}}
+                    </li>
+                    <li>
+                        Дата и время окончания отправки: {{campaign.end_time}}
+                    </li>
+                </ul>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <a href="{% url 'mailings:campaign_list' %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
+                {% if user == campaign.owner %}
+                    <form method="post" action="{% url 'mailings:manual_send_campaign' campaign.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-lg btn-outline-success">Запустить рассылку вручную</button>
+                    </form>
+                    <a href="{% url 'mailings:campaign_edit' campaign.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Редактировать</a>
+                    <a href="{% url 'mailings:campaign_delete' campaign.pk %}" class="btn btn-lg btn-block btn-outline-danger">Удалить</a>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

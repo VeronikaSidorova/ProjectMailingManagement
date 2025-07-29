@@ -1,0 +1,12 @@
+{% extends 'base.html'%}
+
+{% block title %}Форма пользователя{% endblock %}
+
+{% block content %}
+<h2>Форма пользователя</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Сохранить</button>
+</form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html'%}
+
+{% block title %}Отчеты по рассылкам{% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+    <h1 class="mb-4">Статистика по рассылкам</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID рассылки</th>
+                <th>Всего попыток</th>
+                <th>Успешных</th>
+                <th>Неуспешных</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns_stats %}
+                <tr>
+                    <td>
+                    <a href="{% url 'mailings:campaign_statistics_detail' campaign.id %}">
+                        {{ campaign.id }}
+                    </a>
+                    </td>
+                    <td>{{ campaign.total_sent }}</td>
+                    <td>{{ campaign.success_count }}</td>
+                    <td>{{ campaign.failure_count }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Данные отсутствуют</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,17 @@
+{% extends 'base.html'%}
+
+{% block title %}Список рассылок{% endblock %}
+
+{% block content %}
+
+<h2>Статистика рассылки №{{ campaign.id }}</h2>
+
+<ul>
+    <li>Всего попыток: {{ stats.total_sent }}</li>
+    <li>Успешных отправок: {{ stats.success_count }}</li>
+    <li>Неуспешных отправок: {{ stats.failure_count }}</li>
+</ul>
+
+<p><a href="{% url 'mailings:campaign_list' %}">← Вернуться к списку рассылок</a></p>
+
+{% endblock %}

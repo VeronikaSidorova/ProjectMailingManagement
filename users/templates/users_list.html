@@ -1,0 +1,38 @@
+{% extends 'base.html'%}
+
+{% block title %}Список пользователей{% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+    <h1 class="mb-4">Список пользователей</h1>
+
+    {% if object_list %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>E-mail</th>
+                    <th>Имя пользователя</th>
+                    <th>Телефон пользователя</th>
+                    <th>Страна пользователя</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.country }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Нет пользователей.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

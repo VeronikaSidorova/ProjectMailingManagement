@@ -12,15 +12,16 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>№</th>
                     <th>Имя</th>
                     <th>Email</th>
+                    <th>Комментарий</th>
                 </tr>
             </thead>
             <tbody>
                 {% for recipient in object_list %}
                 <tr>
-                    <td>{{ recipient.id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ recipient.full_name }}</td>
                     <td>{{ recipient.email }}</td>
                     <td>"{{ recipient.comment|slice:":15" }}"{% if recipient.comment|length > 15 %}...{% endif %}</td>

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static_bootstrap/css/bootstrap.min.css">
 </head>
 {% include 'header.html' %}
+
 <body>
 <div class="container my-4 text-center">
     <h1 class="mb-4 fw-semibold" style="color: #8A2BE2; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
@@ -14,21 +15,12 @@
 
     {% block content %}
     {% endblock %}
+
 </div>
 
-<div class="fixed-bottom bg-light border-top py-3">
-  <div class="container d-flex justify-content-center gap-3">
-    {% if user.is_authenticated %}
-      <!-- Если пользователь авторизован, показываем кнопку выхода -->
-      <a href="#" class="btn" style="background-color: #17A2B8; color: white;">Выход</a>
-    {% else %}
-      <!-- Если не авторизован, показываем вход и регистрацию -->
-      <a href="#" class="btn" style="background-color: #17A2B8; color: white;">Вход</a>
-      <a href="#" class="btn" style="background-color: #138496; color: white;">Регистрация</a>
-    {% endif %}
-  </div>
-</div>
+{% include 'footer.html' %}
 
 <script src="/static_bootstrap/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
