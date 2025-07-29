@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 
 from config.settings import CACHE_ENABLED
 from .models import Campaign, Recipient, SendAttempt, SendLog, Message

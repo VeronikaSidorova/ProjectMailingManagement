@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
+from django.http import request
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -13,7 +14,7 @@ from django.views.generic import (
 
 from .forms import CampaignForm
 from .models import Campaign, Message, Recipient, SendAttempt
-from .services import send_campaign, get_recipient_from_cache, get_message_from_cache, get_campaign_from_cache
+from .services import get_recipient_from_cache, get_message_from_cache, get_campaign_from_cache
 
 
 # Получатели

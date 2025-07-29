@@ -1,15 +1,13 @@
 import secrets
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
-from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, ListView
 
 from config.settings import EMAIL_HOST_USER
-from users.forms import UserRegisterForm, UserForm, UserSetNewPasswordForm, UserForgotPasswordForm
+from users.forms import UserRegisterForm, UserForm
 from users.models import User
 
 
