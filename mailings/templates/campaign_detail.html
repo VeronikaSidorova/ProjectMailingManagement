@@ -50,13 +50,16 @@
                 </ul>
                 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <a href="{% url 'mailings:campaign_list' %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
-                {% if user == campaign.owner %}
+                {% if user == campaign.owner or user.is_superuser %}
                     <form method="post" action="{% url 'mailings:manual_send_campaign' campaign.pk %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-lg btn-outline-success">Запустить рассылку вручную</button>
                     </form>
                     <a href="{% url 'mailings:campaign_edit' campaign.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Редактировать</a>
                     <a href="{% url 'mailings:campaign_delete' campaign.pk %}" class="btn btn-lg btn-block btn-outline-danger">Удалить</a>
+                {% endif %}
+                {% if perms.mailings.can_finish_campaign or user.is_superuser %}
+                    <a href="{% url 'mailings:finish_campaign' campaign.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Завершить</a>
                 {% endif %}
                 </div>
             </div>

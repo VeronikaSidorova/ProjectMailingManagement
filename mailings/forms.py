@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import BooleanField
 
-from mailings.models import Campaign, Recipient, Message
+from mailings.models import Campaign, Message, Recipient
 
 
 class StyleFormMixin:
@@ -17,7 +17,7 @@ class StyleFormMixin:
 class CampaignForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Campaign
-        fields = ["start_time", "message", "recipients"]
+        fields = ["message", "recipients"]
         widgets = {
             "recipients": forms.SelectMultiple(),  # или forms.SelectMultiple()
             "message": forms.Select(),

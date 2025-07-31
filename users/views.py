@@ -1,13 +1,15 @@
 import secrets
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, ListView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from config.settings import EMAIL_HOST_USER
-from users.forms import UserRegisterForm, UserForm
+from users.forms import UserForm, UserRegisterForm
 from users.models import User
 
 
@@ -25,6 +27,11 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["user_count"] = self.get_queryset().count()
         return context
+
+    def get_queryset(self):
+        managers_group = Group.objects.get(name="managers")
+        filtered_users = User.objects.exclude(is_superuser=True).exclude(groups=managers_group)
+        return filtered_users
 
 
 class UserCreateView(CreateView):
@@ -77,3 +84,11 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     template_name = "user_confirm_delete.html"
     success_url = reverse_lazy("mailings:dashboard")
+
+
+def block_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.is_active = False
+    user.save()
+    messages.success(request, "Пользователь успешно заблокирован.")
+    return redirect("users:users_list")

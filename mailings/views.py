@@ -1,20 +1,13 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
-from django.http import request
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    ListView,
-    TemplateView,
-    UpdateView,
-    DetailView,
-)
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import CampaignForm
 from .models import Campaign, Message, Recipient, SendAttempt
-from .services import get_recipient_from_cache, get_message_from_cache, get_campaign_from_cache
+from .services import get_campaign_from_cache, get_message_from_cache, get_recipient_from_cache
 
 
 # Получатели
@@ -26,7 +19,7 @@ class RecipientListView(ListView):
     def get_queryset(self):
         recipients = get_recipient_from_cache()
         user = self.request.user
-        if user.groups.filter(name="managers").exists():
+        if user.groups.filter(name="managers").exists() or user.is_superuser:
             return recipients
         else:
             return recipients.filter(owner=user)
@@ -76,7 +69,7 @@ class MessageListView(ListView):
         messagies = get_message_from_cache()
         user = self.request.user
         if user.groups.filter(name="managers").exists():
-            return messagies
+            return None
         else:
             return messagies.filter(owner=user)
 
@@ -124,7 +117,7 @@ class CampaignListView(ListView):
     def get_queryset(self):
         campaigns = get_campaign_from_cache()
         user = self.request.user
-        if user.groups.filter(name="managers").exists():
+        if user.groups.filter(name="managers").exists() or user.is_superuser:
             return campaigns
         else:
             return campaigns.filter(owner=user)
@@ -197,7 +190,7 @@ class DashboardView(TemplateView):
         return context
 
 
-def view_statistics(campaign_id):
+def view_statistics(request):
     campaigns_stats = Campaign.objects.annotate(
         total_sent=Count("sendattempt"),
         success_count=Count("sendattempt", filter=Q(sendattempt__status="Успешно")),
@@ -231,3 +224,11 @@ def campaign_statistics_detail_view(request, campaign_id):
             "stats": result,
         },
     )
+
+
+def finish_campaign(request, pk):
+    campaign = get_object_or_404(Campaign, pk=pk)
+    campaign.status = "Завершена"
+    campaign.save()
+    messages.success(request, "Рассылка успешно завершена вручную.")
+    return redirect("mailings:campaign_detail", pk=pk)

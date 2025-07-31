@@ -16,6 +16,7 @@
                     <th>Имя пользователя</th>
                     <th>Телефон пользователя</th>
                     <th>Страна пользователя</th>
+                    <th>Пользователь активен</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +27,12 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.phone }}</td>
                     <td>{{ user.country }}</td>
+                    <td>{% if user.is_active %}
+                            Да
+                        {% else %}
+                            Нет
+                        {% endif %}</td>
+                        <td><a href="{% url 'users:user_block' user.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Заблокировать</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

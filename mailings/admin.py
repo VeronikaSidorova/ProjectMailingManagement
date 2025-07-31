@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Recipient, Message, Campaign, SendAttempt, SendLog
+
+from .models import Campaign, Message, Recipient, SendAttempt, SendLog
 
 
 @admin.register(Recipient)

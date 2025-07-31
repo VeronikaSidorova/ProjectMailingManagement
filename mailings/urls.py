@@ -3,24 +3,10 @@ from django.views.decorators.cache import cache_page
 
 from mailings import services, views
 from mailings.apps import MailingsConfig
-from mailings.views import (
-    CampaignCreateView,
-    CampaignDeleteView,
-    CampaignListView,
-    CampaignUpdateView,
-    DashboardView,
-    MessageCreateView,
-    MessageDeleteView,
-    MessageListView,
-    MessageUpdateView,
-    RecipientCreateView,
-    RecipientDeleteView,
-    RecipientListView,
-    RecipientUpdateView,
-    RecipientDetailView,
-    MessageDetailView,
-    CampaignDetailView,
-)
+from mailings.views import (CampaignCreateView, CampaignDeleteView, CampaignDetailView, CampaignListView,
+                            CampaignUpdateView, DashboardView, MessageCreateView, MessageDeleteView, MessageDetailView,
+                            MessageListView, MessageUpdateView, RecipientCreateView, RecipientDeleteView,
+                            RecipientDetailView, RecipientListView, RecipientUpdateView)
 
 app_name = MailingsConfig.name
 
@@ -54,6 +40,7 @@ urlpatterns = [
         name="campaign_delete",
     ),
     path("campaign/<int:pk>/send/", services.manual_send_campaign, name="manual_send_campaign"),
-    path("statistics/", views.view_statistics, name="statistics"),
+    path("campaign/<int:pk>/finish/", views.finish_campaign, name="finish_campaign"),
+    # path("statistics/", views.view_statistics, name="statistics"),
     path("statistics/<int:campaign_id>/", views.campaign_statistics_detail_view, name="campaign_statistics_detail"),
 ]

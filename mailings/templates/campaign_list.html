@@ -28,7 +28,10 @@
                     <td>{{ campaign.start_time }}</td>
                     <td>{{ campaign.end_time }}</td>
                         <td><a href="{% url 'mailings:campaign_detail' campaign.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Просмотр</a></td>
-                        <td><a href="{% url 'mailings:campaign_statistics_detail' campaign.id %}" class="btn btn-lg btn-block btn-outline-secondary">Отчет</a></td>
+                        <td><a href="{% url 'mailings:campaign_statistics_detail' campaign.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Отчет</a></td>
+                        {% if perms.mailings.can_finish_campaign or user.is_superuser %}
+                            <td><a href="{% url 'mailings:finish_campaign' campaign.pk %}" class="btn btn-lg btn-block btn-outline-secondary">Завершить</a></td>
+                        {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

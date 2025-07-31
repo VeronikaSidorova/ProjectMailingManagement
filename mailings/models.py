@@ -17,6 +17,10 @@ class Recipient(models.Model):
         on_delete=models.SET_NULL,
     )
 
+    class Meta:
+        verbose_name = "Получатель"
+        verbose_name_plural = "Получатели"
+
     def __str__(self):
         return f"{self.full_name} ({self.email})"
 
@@ -33,6 +37,10 @@ class Message(models.Model):
         on_delete=models.SET_NULL,
     )
 
+    class Meta:
+        verbose_name = "Сообщение"
+        verbose_name_plural = "Сообщения"
+
     def __str__(self):
         return self.subject
 
@@ -44,7 +52,7 @@ class Campaign(models.Model):
         ("Завершена", "Завершена"),
     ]
 
-    start_time = models.DateTimeField(null=True, blank=True, verbose_name="Дата и время первой отправки")
+    start_time = models.DateTimeField(verbose_name="Дата и время первой отправки", auto_now_add=True)
     end_time = models.DateTimeField(verbose_name="Дата и время окончания отправки", auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Создана", verbose_name="Статус")
     message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name="Сообщение")
@@ -57,6 +65,14 @@ class Campaign(models.Model):
         null=True,
         on_delete=models.SET_NULL,
     )
+
+    class Meta:
+        verbose_name = "Рассылка"
+        verbose_name_plural = "Рассылки"
+
+        permissions = [
+            ("can_finish_campaign", "Can finish campaign"),
+        ]
 
     def __str__(self):
         return f"Рассылка {self.id} - {self.status}"
@@ -75,6 +91,13 @@ class SendAttempt(models.Model):
     status = models.CharField(max_length=10, choices=status_choices, verbose_name="Статус")
     server_response = models.TextField(verbose_name="Ответ почтового сервера")
 
+    class Meta:
+        verbose_name = "Отправка"
+        verbose_name_plural = "Отправки"
+
+    def __str__(self):
+        return f"Рассылка {self.campaign} - {self.status}"
+
 
 class SendLog(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
@@ -86,3 +109,10 @@ class SendLog(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices)
     server_response = models.TextField()
+
+    class Meta:
+        verbose_name = "Лог"
+        verbose_name_plural = "Логи"
+
+    def __str__(self):
+        return self.status

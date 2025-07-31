@@ -14,9 +14,11 @@
           {% if user.is_authenticated %}
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'mailings:recipient_list' %}">Получатели</a></li>
-            <li><a class="dropdown-item" href="{% url 'mailings:message_list' %}">Сообщения</a></li>
+            {% if not perms.users.can_view_user or user.is_superuser %}
+              <li><a class="dropdown-item" href="{% url 'mailings:message_list' %}">Сообщения</a></li>
+            {% endif %}
             <li><a class="dropdown-item" href="{% url 'mailings:campaign_list' %}">Рассылки</a></li>
-            {% if perms.users.can_view_user %}
+            {% if perms.users.can_view_user or user.is_superuser %}
               <li><a class="dropdown-item" href="{% url 'users:users_list' %}">Список пользователей</a></li>
             {% endif %}
           </ul>
